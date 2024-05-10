@@ -51,7 +51,7 @@ public class SerieService {
         if (serie.isPresent()){
             Serie s = serie.get();
             return s.getEpisodios().stream()
-                    .map(e -> new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio()))
+                    .map(e -> new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio(), e.getEvaluacion()))
                     .collect(Collectors.toList());
         }
         return null;
@@ -59,12 +59,18 @@ public class SerieService {
 
     public List<EpisodioDTO> obtenerTemporadasPorNumero(Long id, Long numeroTemporada) {
         return repository.obtenerTemporadasPorNumero(id, numeroTemporada).stream()
-                .map(e->new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio()))
+                .map(e->new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio(), e.getEvaluacion()))
                 .collect(Collectors.toList());
     }
 
     public List<SerieDTO> obtenerSeriesPorCategoria(String nombreGenero) {
         Categoria categoria = Categoria.fromEspanol(nombreGenero);
         return convierteDatos(repository.findByGenero(categoria));
+    }
+
+    public List<EpisodioDTO> obtenerTop5EpisodiosPorTemporada(Long id) {
+        return repository.top5EpisodiosPorTemporada(id).stream()
+                .map(e->new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio(), e.getEvaluacion()))
+                .collect(Collectors.toList());
     }
 }
